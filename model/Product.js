@@ -31,12 +31,13 @@ const ProductSchema = new mongoose.Schema({
 });
 
 // we are using virutal here because :
-// VIRTUAL: creates a sort of virtual collection at the time of fetching data from the database from frontend.
+// VIRTUAL: creates a sort of virtual collection at the time of fetching data from the database by frontend.
 // And _id is created by MongoDB by default. but, frontend uses "id" instead of "_id".
 // So, we are creating a virtual field "id" which will be used by the frontend.
-const virtual = ProductSchema.virtual("id");
 
-virtual.get(() => this._id);
+ProductSchema.virtual("id").get(function () {
+  return this._id;
+});
 
 ProductSchema.set("toJSON", {
   virtuals: true,

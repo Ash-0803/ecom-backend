@@ -2,6 +2,7 @@ import { configDotenv } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import { createProduct } from "./controller/Product.js";
+import { productRouter } from "./routes/Product.js";
 configDotenv();
 // const routes = require("./routes");
 
@@ -9,7 +10,9 @@ const PORT = process.env.PORT;
 const app = express();
 
 // middlewares
+// this is a middleware that parses the request body and has a body parsern built in
 app.use(express.json());
+app.use("/product", productRouter);
 
 async function connectToDB() {
   try {
@@ -21,10 +24,10 @@ async function connectToDB() {
 }
 connectToDB();
 
-app.post("/product", (req, res) => {
-  createProduct(req, res);
-  console.log("post request made", req.body.title);
-});
+// app.post("/product", (req, res) => {
+//   createProduct(req, res);
+//   console.log("post request made", req.body.title);
+// });
 app.get("/", (req, res) => {
   res.json({ status: "success" });
 });
