@@ -1,8 +1,8 @@
 import { configDotenv } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import { createProduct } from "./controller/Product.js";
-import { productRouter } from "./routes/Product.js";
+import { productRouter } from "./routes/ProductRouter.js";
+import { brandRouter } from "./routes/BrandRouter.js";
 configDotenv();
 // const routes = require("./routes");
 
@@ -13,6 +13,7 @@ const app = express();
 // this is a middleware that parses the request body and has a body parsern built in
 app.use(express.json());
 app.use("/product", productRouter);
+app.use("/brands", brandRouter);
 
 async function connectToDB() {
   try {
