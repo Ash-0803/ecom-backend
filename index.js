@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { productRouter } from "./routes/ProductRouter.js";
 import { brandRouter } from "./routes/BrandRouter.js";
+import { categoryRouter } from "./routes/CategoryRouter.js";
 configDotenv();
 // const routes = require("./routes");
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use("/product", productRouter);
 app.use("/brands", brandRouter);
+app.use("/categories", categoryRouter);
 
 async function connectToDB() {
   try {

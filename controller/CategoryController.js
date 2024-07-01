@@ -1,5 +1,7 @@
-import Category from "../model/Category.js";
+import { Category } from "../model/Category.js";
+
 export const fetchAllCategories = async (req, res) => {
+  console.log("Fetching all categories");
   try {
     const categories = await Category.find();
     res.status(200).json(categories);
