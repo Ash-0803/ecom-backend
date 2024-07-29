@@ -1,9 +1,11 @@
+import cors from "cors";
 import { configDotenv } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import { productRouter } from "./routes/ProductRouter.js";
 import { brandRouter } from "./routes/BrandRouter.js";
 import { categoryRouter } from "./routes/CategoryRouter.js";
+import { orderRouter } from "./routes/OrderRouter.js";
+import { productRouter } from "./routes/ProductRouter.js";
 configDotenv();
 // const routes = require("./routes");
 
@@ -12,10 +14,16 @@ const app = express();
 
 // middlewares
 // this is a middleware that parses the request body and has a body parsern built in
+app.use(
+  cors({
+    exposedHeaders: ["X-total-count"],
+  })
+);
 app.use(express.json());
-app.use("/product", productRouter);
+app.use("/products", productRouter);
 app.use("/brands", brandRouter);
 app.use("/categories", categoryRouter);
+app.use("/orders", orderRouter);
 
 async function connectToDB() {
   try {
@@ -27,10 +35,6 @@ async function connectToDB() {
 }
 connectToDB();
 
-// app.post("/product", (req, res) => {
-//   createProduct(req, res);
-//   console.log("post request made", req.body.title);
-// });
 app.get("/", (req, res) => {
   res.json({ status: "success" });
 });
