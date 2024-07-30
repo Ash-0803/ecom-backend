@@ -24,6 +24,7 @@ app.use("/products", productRouter);
 app.use("/brands", brandRouter);
 app.use("/categories", categoryRouter);
 app.use("/orders", orderRouter);
+app.use("/users", userRouter);
 
 async function connectToDB() {
   try {
