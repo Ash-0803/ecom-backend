@@ -1,14 +1,5 @@
-import User from "../model/User";
+import { User } from "../model/User.js";
 
-export const createUser = async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
 export const fetchUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -21,6 +12,7 @@ export const fetchUser = async (req, res) => {
     });
   }
 };
+
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
