@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { authRouter } from "./routes/AuthRouter.js";
 import { brandRouter } from "./routes/BrandRouter.js";
+import cartRouter from "./routes/CartRouter.js";
 import { categoryRouter } from "./routes/CategoryRouter.js";
 import { orderRouter } from "./routes/OrderRouter.js";
 import { productRouter } from "./routes/ProductRouter.js";
@@ -32,7 +33,7 @@ app.use("/categories", categoryRouter);
 app.use("/orders", orderRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
-
+app.use("/cart", cartRouter);
 async function connectToDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);

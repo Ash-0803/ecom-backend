@@ -46,6 +46,7 @@ export const loginUser = async (req, res) => {
         name: user.name,
         role: user.role,
         addresses: user.addresses,
+        id: user.id,
       });
     } else {
       return res.status(401).json({ message: "wrong credentials" });
