@@ -1,7 +1,15 @@
 import express from "express";
-import { createOrder, fetchAllOrders } from "../controller/OrderController.js";
+import {
+  createOrder,
+  deleteOrder,
+  fetchAllOrders,
+  fetchOrdersByUser,
+} from "../controller/OrderController.js";
 
-export const orderRouter = express
-  .Router()
+export const orderRouter = express.Router();
+
+orderRouter
+  .get("/:userId", fetchOrdersByUser)
   .get("/", fetchAllOrders)
-  .post("/", createOrder);
+  .post("/", createOrder)
+  .delete("/:orderId", deleteOrder);

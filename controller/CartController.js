@@ -9,7 +9,6 @@ export const addToCart = async (req, res) => {
       return res
         .status(400)
         .json({ message: "user, product, and quantity are required" });
-      ``;
     }
 
     const existingCart = await Cart.findOne({ product, user });
@@ -39,7 +38,6 @@ export const addToCart = async (req, res) => {
 export const fetchCart = async (req, res) => {
   try {
     const { userId } = req.params;
-    console.log("fetchCart", req.params, userId);
 
     if (!userId) {
       return res.status(400).json({ message: "userId is required" });
@@ -83,7 +81,6 @@ export const deleteProductFromCart = async (req, res) => {
 export const updateCart = async (req, res) => {
   try {
     const { itemId } = req.params;
-    console.log(itemId, req.body);
     const cart = await Cart.findByIdAndUpdate(itemId, req.body, {
       new: true,
     })

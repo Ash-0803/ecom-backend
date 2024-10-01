@@ -29,7 +29,7 @@ export const fetchAllProductsByFilter = async (req, res) => {
     sortObject[sort] = order === "desc" ? -1 : 1;
   }
 
-  let filterObject = {};
+  let filterObject = { deleted: { $ne: true } };
   if (category) filterObject.category = category;
   if (color) filterObject.color = color;
   if (brand) filterObject.brand = brand;
