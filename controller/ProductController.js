@@ -20,6 +20,7 @@ export const fetchAllProductsByFilter = async (req, res) => {
     order,
     color,
     brand,
+    admin,
     _page = 1,
     _limit = 3,
   } = req.query;
@@ -28,8 +29,10 @@ export const fetchAllProductsByFilter = async (req, res) => {
   if (sort && order) {
     sortObject[sort] = order === "desc" ? -1 : 1;
   }
-
-  let filterObject = { deleted: { $ne: true } };
+  let filterObject = {};
+  if (!admin) {
+    filterObject["deleted"] = { $ne: true };
+  }
   if (category) filterObject.category = category;
   if (color) filterObject.color = color;
   if (brand) filterObject.brand = brand;

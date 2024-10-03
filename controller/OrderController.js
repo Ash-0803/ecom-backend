@@ -64,16 +64,45 @@ export const fetchOrdersByUser = async (req, res) => {
 };
 
 export const fetchAllOrders = async (req, res) => {
+  const {
+    category,
+    _sort,
+    _order,
+    color,
+    brand,
+    _page = 1,
+    _limit = 3,
+  } = req.query;
+
+  let sortObject = {};
+  if (_sort && _order) {
+    sortObject[_sort] = _order === "desc" ? -1 : 1;
+  }
+
+  let filterObject = { deleted: { $ne: true } };
+  if (category) filterObject.category = category;
+  if (color) filterObject.color = color;
+  if (brand) filterObject.brand = brand;
+
+  let skip = (_page - 1) * _limit;
+
   try {
-    const orders = await Order.find(req.query).populate({
-      path: "user",
-      select: "-password -addresses", // Exclude the password field
-    });
-    res.status(200).json(orders);
+    const allOrders = await Order.find(filterObject)
+      .sort(sortObject)
+      .skip(skip)
+      .limit(parseInt(_limit))
+      .populate({
+        path: "user",
+        select: "-password -addresses", // Exclude the password and address field
+      });
+
+    const totalOrders = await Order.countDocuments(filterObject);
+
+    res.status(200).set("X-total-count", totalOrders).json(allOrders);
   } catch (error) {
     res.status(500).json({
       error: error.message,
-      message: "Error fetching orders",
+      message: "Error fetching allOrders from mongodb",
     });
   }
 };
@@ -97,6 +126,26 @@ export const deleteOrder = async (req, res) => {
     res.status(500).json({
       error: error.message,
       message: "Error deleting the order",
+    });
+  }
+};
+export const updateOrder = async (req, res) => {
+  const { orderId } = req.params;
+  console.log(orderId);
+  try {
+    const order = await Order.findByIdAndUpdate(orderId, req.body, {
+      new: true,
+    });
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      message: "Error updating order in mongodb",
     });
   }
 };
