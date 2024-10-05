@@ -1,22 +1,23 @@
 import cors from "cors";
-import { configDotenv } from "dotenv";
+import { config as configDotenv } from "dotenv";
 import express from "express";
+import session from "express-session";
 import mongoose from "mongoose";
+import passport from "./passportConfig.js";
 import { authRouter } from "./routes/AuthRouter.js";
 import { brandRouter } from "./routes/BrandRouter.js";
-import cartRouter from "./routes/CartRouter.js";
+import { cartRouter } from "./routes/CartRouter.js";
 import { categoryRouter } from "./routes/CategoryRouter.js";
 import { orderRouter } from "./routes/OrderRouter.js";
 import { productRouter } from "./routes/ProductRouter.js";
 import { userRouter } from "./routes/UserRouter.js";
-configDotenv();
-// const routes = require("./routes");
+import { isAuth } from "./controller/services/common.js";
 
+configDotenv();
 const PORT = process.env.PORT;
 const app = express();
 
-// middlewares
-// this is a middleware that parses the request body and has a body parsern built in
+// Middlewares
 app.use(
   cors({
     origin: "http://localhost:3000", // Adjust this to match your frontend URL
@@ -26,14 +27,35 @@ app.use(
     //credentials: true, // If you need to send cookies or other credentials
   })
 );
+
+console.log(process.env.SESSION_SECRET);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json());
-app.use("/products", productRouter);
+
+// Debugging middleware
+app.use((req, res, next) => {
+  console.log("Request Body:", req.body);
+  next();
+});
+
+app.use("/products", isAuth, productRouter); // we will use jwt token later instead of isAuth
 app.use("/brands", brandRouter);
 app.use("/categories", categoryRouter);
-app.use("/orders", orderRouter);
-app.use("/users", userRouter);
+app.use("/orders", isAuth, orderRouter);
+app.use("/users", isAuth, userRouter);
 app.use("/auth", authRouter);
-app.use("/cart", cartRouter);
+app.use("/cart", isAuth, cartRouter);
+
+// Connect to MongoDB
 async function connectToDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -42,11 +64,9 @@ async function connectToDB() {
     console.error("Error connecting to MongoDB", error);
   }
 }
+
 connectToDB();
 
-app.get("/", (req, res) => {
-  res.json({ status: "success" });
-});
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

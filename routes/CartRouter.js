@@ -6,7 +6,7 @@ import {
   updateCart,
 } from "../controller/CartController.js";
 
-const cartRouter = express.Router();
+export const cartRouter = express.Router();
 
 // Route to create a new cart
 cartRouter
@@ -14,5 +14,3 @@ cartRouter
   .get("/:userId", fetchCart)
   .delete("/:itemId", deleteProductFromCart)
   .patch("/:itemId", updateCart);
-
-export default cartRouter;

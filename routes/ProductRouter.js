@@ -5,12 +5,10 @@ import {
   fetchProductById,
   updateProduct,
 } from "../controller/ProductController.js";
-const productRouter = express.Router();
+export const productRouter = express.Router();
 
 productRouter
   .get("/", fetchAllProductsByFilter)
   .get("/:id", fetchProductById)
   .patch("/:id", updateProduct)
   .post("/", createProduct);
-
-export { productRouter };
