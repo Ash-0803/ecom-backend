@@ -3,7 +3,8 @@ import { Cart } from "../model/Cart.js";
 // Create a new cart
 export const addToCart = async (req, res) => {
   try {
-    const { product, user, quantity } = req.body;
+    const { product, quantity } = req.body;
+    const { user } = req.user.id;
 
     if (!product || !user || !quantity) {
       return res
@@ -37,7 +38,7 @@ export const addToCart = async (req, res) => {
 // Fetch a cart by userId
 export const fetchCart = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     if (!userId) {
       return res.status(400).json({ message: "userId is required" });

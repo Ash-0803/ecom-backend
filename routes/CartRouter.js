@@ -11,6 +11,6 @@ export const cartRouter = express.Router();
 // Route to create a new cart
 cartRouter
   .post("/", addToCart)
-  .get("/:userId", fetchCart)
+  .get("/", fetchCart)
   .delete("/:itemId", deleteProductFromCart)
   .patch("/:itemId", updateCart);

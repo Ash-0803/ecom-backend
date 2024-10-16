@@ -3,14 +3,8 @@ import { Order } from "../model/Order.js";
 export const createOrder = async (req, res) => {
   console.log("Creating an order");
   try {
-    const {
-      items,
-      totalAmount,
-      totalItems,
-      user,
-      paymentMethod,
-      selectedAddress,
-    } = req.body;
+    const { items, totalAmount, totalItems, paymentMethod, selectedAddress } =
+      req.body;
     console.log(req.body);
     // Validate request body
     if (!items || !user || !paymentMethod || !selectedAddress) {
@@ -25,7 +19,7 @@ export const createOrder = async (req, res) => {
       items,
       totalAmount,
       totalItems,
-      user,
+      user: req.user.id,
       paymentMethod,
       selectedAddress,
     });
@@ -52,8 +46,9 @@ export const createOrder = async (req, res) => {
 
 export const fetchOrdersByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
     const orders = await Order.find({ user: userId });
+    console.log(userId, orders);
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({

@@ -1,9 +1,13 @@
 import { User } from "../model/User.js";
 
 export const fetchUser = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.user;
   try {
-    const user = await User.findById(id, "name email addresses");
+    const user = await User.findById(
+      id,
+      "name email addresses role -_id"
+    ).lean(); // lean method converts mongoose document to plain js objects so that we can delete user.id;
+    delete user.id;
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({

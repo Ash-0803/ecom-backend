@@ -10,7 +10,7 @@ import {
 export const orderRouter = express.Router();
 
 orderRouter
-  .get("/:userId", fetchOrdersByUser)
+  .get("/own", fetchOrdersByUser)
   .get("/", fetchAllOrders)
   .post("/", createOrder)
   .delete("/:orderId", deleteOrder)
