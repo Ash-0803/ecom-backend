@@ -9,7 +9,7 @@ export const createProduct = async (req, res) => {
   } catch (error) {
     res
       .status(400)
-      .json({ error }, { message: "Product could not be created" });
+      .json({ error: error, message: "Product could not be created" });
   }
 };
 

@@ -21,7 +21,7 @@ const app = express();
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:3000", // Adjust this to match your frontend URL
+    origin: ["http://localhost:3000", "https://thehavenstore.vercel.app"], // Adjust this to match your frontend URL
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["X-total-count"],
