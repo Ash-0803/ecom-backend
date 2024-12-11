@@ -7,10 +7,10 @@ export const createOrder = async (req, res) => {
       req.body;
     console.log(req.body);
     // Validate request body
-    if (!items || !user || !paymentMethod || !selectedAddress) {
+    if (!items || !paymentMethod || !selectedAddress) {
       return res.status(400).json({
         message:
-          "items,totalAmount,totalItems,user,paymentMethod,selectedAddress are required",
+          "items,totalAmount,totalItems,paymentMethod,selectedAddress are required",
       });
     }
 
@@ -31,7 +31,7 @@ export const createOrder = async (req, res) => {
     }
 
     // Create the order
-    const order = new Order(req.body);
+    const order = new Order(existingOrder);
 
     // Save the order
     const doc = await order.save();
@@ -48,7 +48,7 @@ export const fetchOrdersByUser = async (req, res) => {
   try {
     const userId = req.user.id;
     const orders = await Order.find({ user: userId });
-    console.log(userId, orders);
+    console.log("fetching orders", userId);
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({
@@ -126,7 +126,7 @@ export const deleteOrder = async (req, res) => {
 };
 export const updateOrder = async (req, res) => {
   const { orderId } = req.params;
-  console.log(orderId);
+  console.log("updating order", orderId);
   try {
     const order = await Order.findByIdAndUpdate(orderId, req.body, {
       new: true,

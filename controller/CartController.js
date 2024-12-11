@@ -4,12 +4,12 @@ import { Cart } from "../model/Cart.js";
 export const addToCart = async (req, res) => {
   try {
     const { product, quantity } = req.body;
-    const { user } = req.user.id;
+    const user = req.user.id;
 
     if (!product || !user || !quantity) {
-      return res
-        .status(400)
-        .json({ message: "user, product, and quantity are required" });
+      return res.status(400).json({
+        message: "user, product, and quantity are required",
+      });
     }
 
     const existingCart = await Cart.findOne({ product, user });
