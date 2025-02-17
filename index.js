@@ -36,9 +36,9 @@ app.use(
     resave: false, // don't save session if unmodified
     saveUninitialized: false,
     cookie: {
-      httpOnly: true, // Ensures the cookie is sent only over HTTP(S), not client JavaScript
-      // secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent only over HTTPS
-      sameSite: "None", // Adjust this based on your needs (e.g., "strict" or "none")
+      httpOnly: true,
+      secure: "true",
+      sameSite: "none",
     },
   })
 );
