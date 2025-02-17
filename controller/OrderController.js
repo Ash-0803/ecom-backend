@@ -5,6 +5,16 @@ export const createOrder = async (req, res) => {
   try {
     const { items, totalAmount, totalItems, paymentMethod, selectedAddress } =
       req.body;
+    const userId = req.user.id;
+    const orderBody = {
+      user: userId,
+      items,
+      totalAmount,
+      totalItems,
+      paymentMethod,
+      selectedAddress,
+    };
+
     console.log(req.body);
     // Validate request body
     if (!items || !paymentMethod || !selectedAddress) {
@@ -15,14 +25,7 @@ export const createOrder = async (req, res) => {
     }
 
     // Check if the order already exists
-    const existingOrder = await Order.findOne({
-      items,
-      totalAmount,
-      totalItems,
-      user: req.user.id,
-      paymentMethod,
-      selectedAddress,
-    });
+    const existingOrder = await Order.findOne(orderBody);
 
     if (existingOrder) {
       return res.status(409).json({
@@ -31,7 +34,7 @@ export const createOrder = async (req, res) => {
     }
 
     // Create the order
-    const order = new Order(existingOrder);
+    const order = new Order(orderBody);
 
     // Save the order
     const doc = await order.save();
