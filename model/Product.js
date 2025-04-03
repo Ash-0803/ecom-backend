@@ -11,6 +11,7 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     min: [1, "wrong min discount"],
     max: [99, "wrong max discount"],
+    default: 1,
   },
   rating: {
     type: Number,
