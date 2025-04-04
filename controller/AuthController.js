@@ -36,6 +36,8 @@ export const createUser = async (req, res) => {
         res.cookie("jwt", token, {
           expires: new Date(Date.now() + 3600000),
           httpOnly: true,
+          secure: true,
+          sameSite: "None",
         });
 
         res.status(201).json(req.user);
@@ -52,6 +54,8 @@ export const loginUser = async (req, res) => {
   res.cookie("jwt", req.user.token, {
     expires: new Date(Date.now() + 3600000),
     httpOnly: true,
+    secure: true,
+    sameSite: "None",
   });
   res.status(201).json(sanitizeUser(req.user));
 };
