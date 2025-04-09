@@ -16,8 +16,8 @@ export const createProduct = async (req, res) => {
 export const fetchAllProductsByFilter = async (req, res) => {
   const {
     category,
-    sort,
-    order,
+    _sort,
+    _order,
     color,
     brand,
     admin,
@@ -26,8 +26,8 @@ export const fetchAllProductsByFilter = async (req, res) => {
   } = req.query;
 
   let sortObject = {};
-  if (sort && order) {
-    sortObject[sort] = order === "desc" ? -1 : 1;
+  if (_sort && _order) {
+    sortObject[_sort] = _order === "desc" ? -1 : 1;
   }
   let filterObject = {};
   if (!admin) {
