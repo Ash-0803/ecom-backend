@@ -11,14 +11,13 @@ import { cacheMiddleware, clearCache } from "../services/redisCache.js";
 export const orderRouter = express.Router();
 
 orderRouter
-  .get("/own", cacheMiddleware(300, true), fetchOrdersByUser) // User-specific caching with 5 minute TTL
-  .get("/", cacheMiddleware(300, false), fetchAllOrders) // Global cache for admin access
+  .get("/own", cacheMiddleware(300, true), fetchOrdersByUser)
+  .get("/", cacheMiddleware(300, false), fetchAllOrders)
   .post(
     "/",
     async (req, res, next) => {
-      // Clear both global and user-specific order caches
       const userId = req.user.id;
-      await clearCache(`user:${userId}:orders`); // Clear user's own orders cache
+      await clearCache(`user:${userId}:orders`);
       await clearCache("orders"); // Clear global orders cache (for admins)
       next();
     },
@@ -27,7 +26,6 @@ orderRouter
   .delete(
     "/:orderId",
     async (req, res, next) => {
-      // Clear both global and user-specific order caches
       const userId = req.user.id;
       await clearCache(`user:${userId}:orders`);
       await clearCache("orders");
@@ -38,7 +36,6 @@ orderRouter
   .patch(
     "/:orderId",
     async (req, res, next) => {
-      // Clear both global and user-specific order caches
       const userId = req.user.id;
       await clearCache(`user:${userId}:orders`);
       await clearCache("orders");

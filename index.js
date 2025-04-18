@@ -1,9 +1,9 @@
+import { RedisStore } from "connect-redis";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config as configDotenv } from "dotenv";
 import express from "express";
 import session from "express-session";
-import RedisStore from "connect-redis";
 
 import { authRouter } from "./routes/AuthRouter.js";
 import { brandRouter } from "./routes/BrandRouter.js";
@@ -15,21 +15,37 @@ import { userRouter } from "./routes/UserRouter.js";
 
 import { connectToDB, isAuth } from "./services/common.js";
 import passport from "./services/passportConfig.js";
-import { redisClient, connectToRedis } from "./services/redisConfig.js";
+import { connectToRedis, redisClient } from "./services/redisConfig.js";
 
 configDotenv();
 
 const PORT = process.env.PORT;
 const app = express();
 
-// Connect to Redis
 connectToRedis();
 
-// Create Redis store for sessions
-const redisStore = new RedisStore({
-  client: redisClient,
-  prefix: "session:",
-});
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET,
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  },
+};
+
+if (redisClient.isReady) {
+  const redisStore = new RedisStore({
+    client: redisClient,
+    prefix: "session:",
+  });
+  sessionConfig.store = redisStore;
+  console.log("Using Redis for session storage");
+} else {
+  console.log("Redis not available, using in-memory session storage");
+}
 
 // Middlewares
 app.use(
@@ -38,25 +54,12 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization"],
     exposedHeaders: ["X-total-count"],
-    credentials: true, // If you need to send cookies or other credentials
+    credentials: true, // If sending cookies or other credentials
   })
 );
 
 app.use(cookieParser());
-app.use(
-  session({
-    store: redisStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false, // don't save session if unmodified
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
+app.use(session(sessionConfig));
 
 app.use(passport.initialize());
 app.use(passport.session());

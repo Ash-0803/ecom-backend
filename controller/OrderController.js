@@ -16,7 +16,6 @@ export const createOrder = async (req, res) => {
     };
 
     console.log(req.body);
-    // Validate request body
     if (!items || !paymentMethod || !selectedAddress) {
       return res.status(400).json({
         message:
@@ -24,19 +23,16 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    // Check if the order already exists
     const existingOrder = await Order.findOne(orderBody);
-
+    // TODO: we need to prompt the user to ask whether they want to still create the new order or not. If they want to make the same order again, we can create a new order with the same details. For now, we will just return a 409 error.
     if (existingOrder) {
       return res.status(409).json({
         message: "Order already exists",
       });
     }
 
-    // Create the order
     const order = new Order(orderBody);
 
-    // Save the order
     const doc = await order.save();
     res.status(201).json(doc);
   } catch (error) {
